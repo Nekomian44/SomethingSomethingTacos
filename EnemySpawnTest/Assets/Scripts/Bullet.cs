@@ -28,6 +28,7 @@ public class Bullet : MonoBehaviour {
 		if (col.gameObject.name == "Enemy")
 		{
 			Destroy(col.gameObject);
+			Destroy (this.gameObject);
 		}
 	}
 }
