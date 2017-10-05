@@ -16,7 +16,7 @@ public class CollisionBlock : MonoBehaviour {
 		
 	}
 
-	void OnTriggerEnter (Collision col)
+	void OnCollisionEnter (Collision col)
 	{
 		if(col.gameObject.name == "Enemy")
 		{

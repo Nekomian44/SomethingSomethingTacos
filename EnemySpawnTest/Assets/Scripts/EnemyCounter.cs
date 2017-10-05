@@ -20,10 +20,10 @@ public class EnemyCounter : MonoBehaviour
 			Destroy(this.gameObject);
 
 		//float x = Input.GetAxis("Horizontal") * Time.deltaTime * 150f;
-		float z = Time.deltaTime * 1.5f;
+		//float z = Time.deltaTime * 1.5f;
 
 		//transform.Rotate(0, x, 0);
-		transform.Translate(0, 0, 0-z);
+		//transform.Translate(0, 0, 0-z);
 	}
 
 	public void OnDestroy()

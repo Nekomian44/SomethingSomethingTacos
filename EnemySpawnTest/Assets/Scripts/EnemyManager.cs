@@ -24,8 +24,8 @@ public class EnemyManager : MonoBehaviour
 
 		int spawnPointIndex = Random.Range(0, spawnPoints.Length);
 
-		var enemey = Instantiate (enemy, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
-		enemey.AddComponent<EnemyCounter>().Init(this);
+		var enemy1 = Instantiate (enemy, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+		enemy1.AddComponent<Enemy>().Init(this);
 		totalEnemyCount++;
 	}
 
