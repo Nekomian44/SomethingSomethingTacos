@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () 
+	void Update () 
 	{
         if (health == 0)
             Destroy(this.gameObject);
@@ -38,4 +38,9 @@ public class Enemy : MonoBehaviour {
 		if (transform.position.z <= -20)
 			Destroy(this.gameObject);
 	}
+
+    void OnDestroy()
+    {
+        _manager.totalEnemyCount--;
+    }
 }

@@ -14,12 +14,12 @@ public class Bullet : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void Update () {
 		Vector3 movement = new Vector3(0.0f, 0.0f, movementSpeed);
 
 		rigid.AddForce(movement * speed);
 
-		if (transform.position.z >= 50)
+		if (transform.position.z >= 40)
 			Destroy(this.gameObject);
 	}
 

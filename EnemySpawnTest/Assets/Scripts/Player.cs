@@ -13,7 +13,7 @@ public class Player : MonoBehaviour {
 		rigid = GetComponent<Rigidbody>();
 	}
 
-	void FixedUpdate()
+	void Update()
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
