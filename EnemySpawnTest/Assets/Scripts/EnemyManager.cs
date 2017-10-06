@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class EnemyManager : MonoBehaviour
 	public float spawnTime = 3f;
 	public float numOfEnemies = 5;
 	public Transform[] spawnPoints;
+
+	public Text health_text;
 
 	public int totalEnemyCount = 0;
 
@@ -19,7 +22,7 @@ public class EnemyManager : MonoBehaviour
 
 	void SpawnEnemy ()
 	{
-		if (totalEnemyCount >= numOfEnemies)
+		if (totalEnemyCount >= numOfEnemies || health_text.text == "GAME OVER")
 			return;
 
 		int spawnPointIndex = Random.Range(0, spawnPoints.Length);
