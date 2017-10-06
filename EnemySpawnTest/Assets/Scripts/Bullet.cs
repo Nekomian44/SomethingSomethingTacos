@@ -7,6 +7,13 @@ public class Bullet : MonoBehaviour {
 	public float speed = 2.0f;
 	private Rigidbody rigid;
 	public float movementSpeed = 5.0f;
+	private Player player;
+
+	public void Init(Player play)
+	{
+		player = play;
+		this.Start();
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -28,7 +35,8 @@ public class Bullet : MonoBehaviour {
 		if (col.gameObject.name == "Enemy")
 		{
 			Destroy(col.gameObject);
-			Destroy (this.gameObject);
+			Destroy(this.gameObject);
+			player.AddToScore();
 		}
 	}
 }

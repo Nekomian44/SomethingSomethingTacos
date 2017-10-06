@@ -1,16 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
 	private Rigidbody rigid;
 	public GameObject bullet;
 	public float speed;
+	public Text health, score, time;
+	public int maxHealth;
+	public int currentHealth, currentScore = 0, currentMinutes = 0, currentSeconds = 0;
 
 	// Use this for initialization
 	void Start () {
 		rigid = GetComponent<Rigidbody>();
+		currentHealth = maxHealth;
+		health.text = "Health: " + maxHealth;
+		score.text = "Score: " + currentScore;
+		print(string.Format("00", currentMinutes) + ":" + string.Format("00", currentSeconds));
+		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
+		InvokeRepeating("TimerCount", 1.0f, 1.0f);
 	}
 
 	void Update()
@@ -18,7 +29,7 @@ public class Player : MonoBehaviour {
 		if (Input.GetMouseButtonDown(0))
 		{
 			var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
-			newBullet.AddComponent<Bullet>();
+			newBullet.AddComponent<Bullet>().Init(this);
 		}
 
 		float moveHorizontal = Input.GetAxis("Horizontal");
@@ -34,6 +45,30 @@ public class Player : MonoBehaviour {
 		if(col.gameObject.name == "Enemy")
 		{
 			Destroy(col.gameObject);
+			currentHealth--;
+			health.text = "Health: " + currentHealth;
+			if (currentHealth <= 0)
+			{
+				Destroy(this.gameObject);
+				health.text = "GAME OVER";
+			}
 		}
+	}
+
+	public void AddToScore()
+	{
+		currentScore += 50;
+		score.text = "Score: " + currentScore;
+	}
+
+	void TimerCount()
+	{
+		currentSeconds++;
+		if(currentSeconds >= 60)
+		{
+			currentSeconds = 0;
+			currentMinutes++;
+		}
+		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
 	}
 }
