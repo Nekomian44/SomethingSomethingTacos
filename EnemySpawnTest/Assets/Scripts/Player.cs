@@ -12,12 +12,13 @@ public class Player : MonoBehaviour {
 	public Text health, score, time;
 	public int maxHealth;
 	public int currentHealth, currentScore = 0, currentMinutes = 0, currentSeconds = 0;
+	public AudioClip crash1, crash2, crash3, crash4;
 
 	// Use this for initialization
 	void Start () {
 		rigid = GetComponent<Rigidbody>();
 		currentHealth = maxHealth;
-		health.text = "Health: " + maxHealth;
+		health.text = "";
 		score.text = "Score: " + currentScore;
 		print(string.Format("00", currentMinutes) + ":" + string.Format("00", currentSeconds));
 		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
@@ -35,7 +36,12 @@ public class Player : MonoBehaviour {
 		float moveHorizontal = Input.GetAxis("Horizontal");
 		float moveVertical = Input.GetAxis("Vertical");
 
-		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+		Vector3 movement;
+
+		if (GameObject.Find("Player").transform.position.z >= -9)
+			movement = new Vector3(moveHorizontal, moveVertical, 0.0f);
+		else
+			movement = new Vector3(moveHorizontal, moveVertical, 0.05f);
 
 		rigid.AddForce(movement * speed);
 	}
@@ -45,13 +51,12 @@ public class Player : MonoBehaviour {
 		if(col.gameObject.name == "Enemy")
 		{
 			Destroy(col.gameObject);
-			currentHealth--;
-			health.text = "Health: " + currentHealth;
-			if (currentHealth <= 0)
-			{
-				Destroy(this.gameObject);
-				health.text = "GAME OVER";
-			}
+			rigid.AddForce(new Vector3(0, 0, -20f));
+		}
+		if(col.gameObject.name == "Despawner")
+		{
+			Destroy(this.gameObject);
+			health.text = "GAME OVER";
 		}
 	}
 

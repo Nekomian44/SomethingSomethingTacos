@@ -10,11 +10,12 @@ public class Enemy : MonoBehaviour {
 	private EnemyManager _manager;
 	public float movementSpeed = -10.0f;
 
-	public void Init(EnemyManager manager)
+	public void Init(EnemyManager manager, float currentSpeed)
 	{
 		_manager = manager;
 		this.name = "Enemy";
 		this.Start();
+		movementSpeed = currentSpeed;
 	}
 
 	// Use this for initialization
@@ -34,13 +35,22 @@ public class Enemy : MonoBehaviour {
 		Vector3 movement = new Vector3(0.0f, 0.0f, movementSpeed);
 
 		rigid.AddForce(movement * speed);
+	}
 
-		if (transform.position.z <= -20)
+	void OnCollisionEnter(Collision col)
+	{
+		if(col.gameObject.name == "Despawner")
+		{
 			Destroy(this.gameObject);
+
+		}
 	}
 
     void OnDestroy()
     {
         _manager.totalEnemyCount--;
+		_manager.numberOfEnemiesSpawned++;
+		if(_manager.currentSpeed > -30.0f)
+			_manager.currentSpeed -= 0.1f;
     }
 }

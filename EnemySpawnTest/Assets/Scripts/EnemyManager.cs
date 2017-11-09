@@ -6,14 +6,17 @@ using UnityEngine.UI;
 public class EnemyManager : MonoBehaviour
 {
 	public GameObject enemy;
-	public float startDelay = 5f;
-	public float spawnTime = 3f;
+	public float startDelay = 2f;
+	public float spawnTime = 1f;
 	public float numOfEnemies = 5;
 	public Transform[] spawnPoints;
 
 	public Text health_text;
 
 	public int totalEnemyCount = 0;
+	public int numberOfEnemiesSpawned = 0;
+
+	public float currentSpeed = -10.0f;
 
 	void Start ()
 	{
@@ -28,12 +31,11 @@ public class EnemyManager : MonoBehaviour
 		int spawnPointIndex = Random.Range(0, spawnPoints.Length);
 
 		var enemy1 = Instantiate (enemy, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
-		enemy1.AddComponent<Enemy>().Init(this);
+		enemy1.AddComponent<Enemy>().Init(this, currentSpeed);
 		totalEnemyCount++;
 	}
 
 	public void OnEnemyDestroyed(EnemyCounter enemy)
 	{
-		totalEnemyCount--;
 	}
 }
