@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: a8dd22787ea67cd45a5eb53268f208a4
+timeCreated: 1509916549
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Digital dream
+  fontNames:
+  - Digital dream
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
