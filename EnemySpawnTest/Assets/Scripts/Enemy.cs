@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour {
 	private Rigidbody rigid;
 	private EnemyManager _manager;
 	public float movementSpeed = -10.0f;
+	public GameObject backstop;
 
 	public void Init(EnemyManager manager)
 	{
@@ -34,9 +35,14 @@ public class Enemy : MonoBehaviour {
 		Vector3 movement = new Vector3(0.0f, 0.0f, movementSpeed);
 
 		rigid.AddForce(movement * speed);
+	}
 
-		if (transform.position.z <= -20)
+	void OnCollisionEnter(Collision col)
+	{
+		if(col.gameObject.name == "PlayerBoundary - Back")
+		{
 			Destroy(this.gameObject);
+		}
 	}
 
     void OnDestroy()

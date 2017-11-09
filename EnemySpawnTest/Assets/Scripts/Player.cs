@@ -17,7 +17,7 @@ public class Player : MonoBehaviour {
 	void Start () {
 		rigid = GetComponent<Rigidbody>();
 		currentHealth = maxHealth;
-		health.text = "Health: " + maxHealth;
+		health.text = "";
 		score.text = "Score: " + currentScore;
 		print(string.Format("00", currentMinutes) + ":" + string.Format("00", currentSeconds));
 		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
@@ -35,7 +35,12 @@ public class Player : MonoBehaviour {
 		float moveHorizontal = Input.GetAxis("Horizontal");
 		float moveVertical = Input.GetAxis("Vertical");
 
-		Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+		Vector3 movement;
+
+		if (GameObject.Find("Player").transform.position.z >= -9.5f)
+			movement = new Vector3(moveHorizontal, moveVertical, 0.0f);
+		else
+			movement = new Vector3(moveHorizontal, moveVertical, 0.02f);
 
 		rigid.AddForce(movement * speed);
 	}
@@ -45,13 +50,12 @@ public class Player : MonoBehaviour {
 		if(col.gameObject.name == "Enemy")
 		{
 			Destroy(col.gameObject);
-			currentHealth--;
-			health.text = "Health: " + currentHealth;
-			if (currentHealth <= 0)
-			{
-				Destroy(this.gameObject);
-				health.text = "GAME OVER";
-			}
+		}
+
+		if(col.gameObject.name == "PlayerBoundary - Back")
+		{
+			Destroy(this.gameObject);
+			health.text = "GAME OVER";
 		}
 	}
 
