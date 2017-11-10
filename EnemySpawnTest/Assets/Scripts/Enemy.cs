@@ -9,10 +9,12 @@ public class Enemy : MonoBehaviour {
 	private Rigidbody rigid;
 	private EnemyManager _manager;
 	public float movementSpeed = -10.0f;
+	private Player _player;
 
-	public void Init(EnemyManager manager, float currentSpeed)
+	public void Init(EnemyManager manager, float currentSpeed, Player player)
 	{
 		_manager = manager;
+		_player = player;
 		this.name = "Enemy";
 		this.Start();
 		movementSpeed = currentSpeed;
@@ -42,7 +44,7 @@ public class Enemy : MonoBehaviour {
 		if(col.gameObject.name == "Despawner")
 		{
 			Destroy(this.gameObject);
-
+			_player.AddToScore(false);
 		}
 	}
 

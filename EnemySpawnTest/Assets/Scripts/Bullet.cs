@@ -36,7 +36,7 @@ public class Bullet : MonoBehaviour {
 		{
 			Destroy(col.gameObject);
 			Destroy(this.gameObject);
-			player.AddToScore();
+			player.AddToScore(true);
 		}
 	}
 }

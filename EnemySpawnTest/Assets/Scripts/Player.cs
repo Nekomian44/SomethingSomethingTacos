@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour {
 	public int maxHealth;
 	public int currentHealth, currentScore = 0, currentMinutes = 0, currentSeconds = 0;
 	public AudioClip crash1, crash2, crash3, crash4;
+	private bool destroyed = false;
 
 	// Use this for initialization
 	void Start () {
@@ -39,9 +41,17 @@ public class Player : MonoBehaviour {
 		Vector3 movement;
 
 		if (GameObject.Find("Player").transform.position.z >= -9)
+		{
 			movement = new Vector3(moveHorizontal, moveVertical, 0.0f);
+			if(GameObject.Find("Player").transform.position.z > -9)
+				GameObject.Find("Player").transform.position = new Vector3(GameObject.Find("Player").transform.position.x, GameObject.Find("Player").transform.position.y, -9.0f);
+		}
 		else
-			movement = new Vector3(moveHorizontal, moveVertical, 0.05f);
+			movement = new Vector3(moveHorizontal, moveVertical, 0.03f);
+
+		int life = (int)(((-12.6701 - GameObject.Find("Player").transform.position.z) / (-3.6701)) * 100) + 1;
+
+		health.text = "Integrity: " + life + "%";
 
 		rigid.AddForce(movement * speed);
 	}
@@ -57,13 +67,20 @@ public class Player : MonoBehaviour {
 		{
 			Destroy(this.gameObject);
 			health.text = "GAME OVER";
+			SceneManager.LoadScene("mainMenu");
 		}
 	}
 
-	public void AddToScore()
+	public void AddToScore(bool hit)
 	{
-		currentScore += 50;
-		score.text = "Score: " + currentScore;
+		if (!destroyed)
+		{
+			if (hit)
+				currentScore += 100;
+			else
+				currentScore += 25;
+			score.text = "Score: " + currentScore;
+		}
 	}
 
 	void TimerCount()
@@ -75,5 +92,10 @@ public class Player : MonoBehaviour {
 			currentMinutes++;
 		}
 		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
+	}
+
+	void OnDestroy()
+	{
+		destroyed = true;
 	}
 }

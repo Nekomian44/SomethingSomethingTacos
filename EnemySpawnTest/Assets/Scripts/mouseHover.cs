@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class mouseHover : MonoBehaviour {
 
@@ -34,7 +35,7 @@ public class mouseHover : MonoBehaviour {
 			aud.clip = start;
 			aud.Play ();
 			// TODO insert scene name as string in the parenthises
-			Application.LoadLevel (0);
+			SceneManager.LoadScene("Scene01");
 		}
 		if (isExit)
 		{
