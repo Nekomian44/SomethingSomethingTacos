@@ -16,8 +16,10 @@ public class Player : MonoBehaviour {
 	public AudioSource playerAudio, background;
 	public AudioClip crash1, crash2, crash3, crash4, blackHole;
 	public float restartDelay = 16f;
-	private float restartTimer;
-	private bool destroyed = false;
+	private float restartTimer, moveHorizontal, moveVertical, extraX = 0, extraY = 0, extraZ = 0;
+	private bool destroyed = false, damaged = false, flashSwitcher = true;
+	private int damageDelay, damageDelayLimit = 20, damageFlashDelay, damageDelayFlashLimit = 50, invincibleTime = 0, rapidFireTime = 0;
+	private bool rapidfire = false, invincible = false, shielded = false;
 
 	// Use this for initialization
 	void Start () {
@@ -34,14 +36,28 @@ public class Player : MonoBehaviour {
 	{
 		if (!destroyed)
 		{
-			if (Input.GetMouseButtonDown(0))
+			if (Input.GetMouseButtonDown(0) && !rapidfire)
 			{
 				var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
 				newBullet.AddComponent<Bullet>().Init(this);
 			}
 
-			float moveHorizontal = Input.GetAxis("Horizontal");
-			float moveVertical = Input.GetAxis("Vertical");
+			if(invincibleTime <= 0)
+			{
+				invincible = false;
+				rigid.detectCollisions = true;
+			}
+
+			if(rapidfire)
+			{
+				if (rapidFireTime <= 0)
+					rapidfire = false;
+				var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
+				newBullet.AddComponent<Bullet>().Init(this);
+			}
+
+			moveHorizontal = Input.GetAxis("Horizontal");
+			moveVertical = Input.GetAxis("Vertical");
 
 			Vector3 movement;
 
@@ -59,6 +75,44 @@ public class Player : MonoBehaviour {
 			health.text = "Integrity: " + life + "%";
 
 			rigid.AddForce(movement * speed);
+
+			if(damaged)
+			{
+				health.color = Color.red;
+				damageDelay++;
+			}
+			if (damageDelay >= damageDelayLimit)
+			{
+				health.color = Color.white;
+				damaged = false;
+				damageDelay = 0;
+				System.Console.WriteLine("reset");
+			}
+			if(life <= 25)
+			{
+				damageFlashDelay++;
+				Debug.Log(damageFlashDelay);
+				if(damageFlashDelay >= damageDelayFlashLimit && flashSwitcher)
+				{
+					health.color = Color.red;
+					damageFlashDelay = 0;
+					damaged = false;
+					flashSwitcher = false;
+					System.Console.WriteLine("red");
+				}
+				else if(damageFlashDelay >= damageDelayFlashLimit && !flashSwitcher)
+				{
+					health.color = Color.white;
+					damageFlashDelay = 0;
+					damaged = false;
+					flashSwitcher = true;
+					System.Console.WriteLine("white");
+				}
+			}
+			else if(life >= 25 && !damaged)
+			{
+				health.color = Color.white;
+			}
 		}
 		else
 		{
@@ -74,8 +128,7 @@ public class Player : MonoBehaviour {
 		if(col.gameObject.name == "Enemy")
 		{
 			Destroy(col.gameObject);
-			rigid.AddForce(new Vector3(0, 0, -20f));
-			PlayCrashSound();
+			Hit();
 		}
 		if(col.gameObject.name == "Despawner")
 		{
@@ -86,7 +139,25 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	void PlayCrashSound()
+	public void Invincible()
+	{
+		invincible = true;
+		invincibleTime = 15;
+		rigid.detectCollisions = false;
+	}
+
+	public void Shield()
+	{
+		shielded = true;
+	}
+
+	public void RapidFire()
+	{
+		rapidfire = true;
+		rapidFireTime = 10;
+	}
+
+	void Hit()
 	{
 		switch (UnityEngine.Random.Range(0, 4))
 		{
@@ -103,10 +174,12 @@ public class Player : MonoBehaviour {
 				playerAudio.PlayOneShot(crash4);
 				break;
 		}
+		damaged = true;
 	}
 
 	void GameOver()
 	{
+		background.loop = false;
 		background.clip = blackHole;
 		background.Play();
 		destroyed = true;
@@ -133,6 +206,10 @@ public class Player : MonoBehaviour {
 			currentMinutes++;
 		}
 		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
+		if (invincibleTime >= 0)
+			invincibleTime--;
+		if (rapidFireTime >= 0)
+			rapidFireTime--;
 	}
 
 	void OnDestroy()

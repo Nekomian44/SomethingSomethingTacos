@@ -54,14 +54,19 @@
      <Compile Include="Assets\Scripts\BoundaryScript.cs" />
      <Compile Include="Assets\Scripts\Bullet.cs" />
      <Compile Include="Assets\Scripts\BulletManager.cs" />
+     <Compile Include="Assets\Scripts\CameraScript.cs" />
      <Compile Include="Assets\Scripts\CollisionBlock.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\EnemyCounter.cs" />
      <Compile Include="Assets\Scripts\EnemyManager.cs" />
+     <Compile Include="Assets\Scripts\Invincibility.cs" />
      <Compile Include="Assets\Scripts\menuFloat.cs" />
      <Compile Include="Assets\Scripts\mouseHover.cs" />
      <Compile Include="Assets\Scripts\music_switch.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\PowerUpManager.cs" />
+     <Compile Include="Assets\Scripts\RapidFire.cs" />
+     <Compile Include="Assets\Scripts\Shield.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

@@ -1,10 +1,15 @@
 fileFormatVersion: 2
 guid: 03d4849bc20684c7881967a83ec5770e
-timeCreated: 1507062983
+timeCreated: 1512707563
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - invincibility: {fileID: 1630069993427012, guid: f4dc9b633ada3d948a4310251d063d3f,
+      type: 2}
+  - rapidfire: {fileID: 1581860777612328, guid: a06d06ac0ca957b4c8887715b4f46160,
+      type: 2}
+  - shield: {fileID: 1245115409756406, guid: fb95fc51f36c2ec47a5e0a82e4a5bb93, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
