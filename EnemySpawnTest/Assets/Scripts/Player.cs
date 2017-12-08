@@ -18,7 +18,7 @@ public class Player : MonoBehaviour {
 	public float restartDelay = 16f;
 	private float restartTimer, moveHorizontal, moveVertical, extraX = 0, extraY = 0, extraZ = 0;
 	private bool destroyed = false, damaged = false, flashSwitcher = true;
-	private int damageDelay, damageDelayLimit = 20, damageFlashDelay, damageDelayFlashLimit = 50, invincibleTime = 0, rapidFireTime = 0;
+	private int damageDelay, damageDelayLimit = 20, damageFlashDelay, damageDelayFlashLimit = 50, invincibleTime = 0, rapidFireTime = 0, fireRate=10;
 	private bool rapidfire = false, invincible = false, shielded = false;
 
 	// Use this for initialization
@@ -34,14 +34,19 @@ public class Player : MonoBehaviour {
 
 	void Update()
 	{
+			if(Input.GetKeyDown(KeyCode.Escape) == true)
+			{
+			SceneManager.LoadScene("mainMenu");
+			}
+
 		if (!destroyed)
 		{
-			if (Input.GetMouseButtonDown(0) && !rapidfire)
+			if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space)) && !rapidfire && fireRate >= 10)
 			{
 				var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
 				newBullet.AddComponent<Bullet>().Init(this);
+				fireRate = 0;
 			}
-
 			if(invincibleTime <= 0)
 			{
 				invincible = false;
@@ -113,6 +118,7 @@ public class Player : MonoBehaviour {
 			{
 				health.color = Color.white;
 			}
+			fireRate++;
 		}
 		else
 		{
