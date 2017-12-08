@@ -54,21 +54,15 @@ public class EnemyManager : MonoBehaviour
 	public void UpdateKills(bool fromEnemy, Vector3 position)
 	{
 		kills_text.text = "Kills Needed: " + enemiesLeft;
-		if (UnityEngine.Random.Range(0, 100) <= 99 && fromEnemy)
+		if (UnityEngine.Random.Range(0, 100) <= 5 && fromEnemy)
 		{
-			switch (UnityEngine.Random.Range(0, 3))
+			switch (UnityEngine.Random.Range(0, 2))
 			{
 				case 0:
-					var invince = Instantiate(invincibility, position, transform.rotation);
-					invince.AddComponent<Invincibility>().Init();
+					player.Invincible();
 					break;
 				case 1:
-					var newShield = Instantiate(shield, position, transform.rotation);
-					newShield.AddComponent<Shield>().Init();
-					break;
-				default:
-					var newRapidFire = Instantiate(rapidFire, position, transform.rotation);
-					newRapidFire.AddComponent<RapidFire>().Init();
+					player.RapidFire();
 					break;
 			}
 		}

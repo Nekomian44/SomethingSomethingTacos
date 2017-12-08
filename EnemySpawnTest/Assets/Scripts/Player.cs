@@ -10,7 +10,7 @@ public class Player : MonoBehaviour {
 	private Rigidbody rigid;
 	public GameObject bullet;
 	public float speed;
-	public Text health, score, time;
+	public Text health, score, time, invincibleText, rapidFireText;
 	public int maxHealth;
 	public int currentHealth, currentScore = 0, currentMinutes = 0, currentSeconds = 0;
 	public AudioSource playerAudio, background;
@@ -18,7 +18,7 @@ public class Player : MonoBehaviour {
 	public float restartDelay = 16f;
 	private float restartTimer, moveHorizontal, moveVertical, extraX = 0, extraY = 0, extraZ = 0;
 	private bool destroyed = false, damaged = false, flashSwitcher = true;
-	private int damageDelay, damageDelayLimit = 20, damageFlashDelay, damageDelayFlashLimit = 50, invincibleTime = 0, rapidFireTime = 0, fireRate=10;
+	private int damageDelay, damageDelayLimit = 20, damageFlashDelay, damageDelayFlashLimit = 50, invincibleTime = 0, rapidFireTime = 0, fireRate=10, fireOffset, fireLimit = 5;
 	private bool rapidfire = false, invincible = false, shielded = false;
 
 	// Use this for initialization
@@ -30,6 +30,8 @@ public class Player : MonoBehaviour {
 		print(string.Format("00", currentMinutes) + ":" + string.Format("00", currentSeconds));
 		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
 		InvokeRepeating("TimerCount", 1.0f, 1.0f);
+		invincibleText.text = "";
+		rapidFireText.text = "";
 	}
 
 	void Update()
@@ -43,22 +45,29 @@ public class Player : MonoBehaviour {
 		{
 			if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space)) && !rapidfire && fireRate >= 10)
 			{
+				rapidFireText.text = "";
 				var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
 				newBullet.AddComponent<Bullet>().Init(this);
 				fireRate = 0;
 			}
 			if(invincibleTime <= 0)
 			{
+				invincibleText.text = "";
 				invincible = false;
 				rigid.detectCollisions = true;
 			}
 
 			if(rapidfire)
 			{
+				fireOffset++;
+				if (fireOffset >= fireLimit)
+				{
+					var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
+					newBullet.AddComponent<Bullet>().Init(this);
+					fireOffset = 0;
+				}
 				if (rapidFireTime <= 0)
 					rapidfire = false;
-				var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
-				newBullet.AddComponent<Bullet>().Init(this);
 			}
 
 			moveHorizontal = Input.GetAxis("Horizontal");
@@ -150,6 +159,7 @@ public class Player : MonoBehaviour {
 		invincible = true;
 		invincibleTime = 15;
 		rigid.detectCollisions = false;
+		invincibleText.text = "Invincible: " + invincibleTime;
 	}
 
 	public void Shield()
@@ -161,6 +171,7 @@ public class Player : MonoBehaviour {
 	{
 		rapidfire = true;
 		rapidFireTime = 10;
+		rapidFireText.text = "Rapid Fire: " + rapidFireTime;
 	}
 
 	void Hit()
@@ -212,10 +223,16 @@ public class Player : MonoBehaviour {
 			currentMinutes++;
 		}
 		time.text = "Time: " + currentMinutes.ToString("00") + ":" + currentSeconds.ToString("00");
-		if (invincibleTime >= 0)
+		if (invincibleTime > 0)
+		{
 			invincibleTime--;
-		if (rapidFireTime >= 0)
+			invincibleText.text = "Invincible: " + invincibleTime;
+		}
+		if (rapidFireTime > 0)
+		{
 			rapidFireTime--;
+			rapidFireText.text = "Rapid Fire: " + rapidFireTime;
+		}
 	}
 
 	void OnDestroy()

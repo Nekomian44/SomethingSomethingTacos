@@ -38,23 +38,5 @@ public class Bullet : MonoBehaviour {
 			Destroy(this.gameObject);
 			player.AddToScore(true);
 		}
-		if(col.gameObject.name == "Invincibility")
-		{
-			Destroy(col.gameObject);
-			Destroy(this.gameObject);
-			player.Invincible();
-		}
-		if(col.gameObject.name == "Shield")
-		{
-			Destroy(col.gameObject);
-			Destroy(this.gameObject);
-			player.Shield();
-		}
-		if (col.gameObject.name == "RapidFire")
-		{
-			Destroy(col.gameObject);
-			Destroy(this.gameObject);
-			player.RapidFire();
-		}
 	}
 }
