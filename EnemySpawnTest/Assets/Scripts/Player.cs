@@ -13,7 +13,10 @@ public class Player : MonoBehaviour {
 	public Text health, score, time;
 	public int maxHealth;
 	public int currentHealth, currentScore = 0, currentMinutes = 0, currentSeconds = 0;
-	public AudioClip crash1, crash2, crash3, crash4;
+	public AudioSource playerAudio, background;
+	public AudioClip crash1, crash2, crash3, crash4, blackHole;
+	public float restartDelay = 16f;
+	private float restartTimer;
 	private bool destroyed = false;
 
 	// Use this for initialization
@@ -29,31 +32,41 @@ public class Player : MonoBehaviour {
 
 	void Update()
 	{
-		if (Input.GetMouseButtonDown(0))
+		if (!destroyed)
 		{
-			var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
-			newBullet.AddComponent<Bullet>().Init(this);
-		}
+			if (Input.GetMouseButtonDown(0))
+			{
+				var newBullet = Instantiate(bullet, GameObject.Find("BulletSpawner").transform.position, GameObject.Find("BulletSpawner").transform.rotation);
+				newBullet.AddComponent<Bullet>().Init(this);
+			}
 
-		float moveHorizontal = Input.GetAxis("Horizontal");
-		float moveVertical = Input.GetAxis("Vertical");
+			float moveHorizontal = Input.GetAxis("Horizontal");
+			float moveVertical = Input.GetAxis("Vertical");
 
-		Vector3 movement;
+			Vector3 movement;
 
-		if (GameObject.Find("Player").transform.position.z >= -9)
-		{
-			movement = new Vector3(moveHorizontal, moveVertical, 0.0f);
-			if(GameObject.Find("Player").transform.position.z > -9)
-				GameObject.Find("Player").transform.position = new Vector3(GameObject.Find("Player").transform.position.x, GameObject.Find("Player").transform.position.y, -9.0f);
+			if (GameObject.Find("Player").transform.position.z >= -9)
+			{
+				movement = new Vector3(moveHorizontal, moveVertical, 0.0f);
+				if (GameObject.Find("Player").transform.position.z > -9)
+					GameObject.Find("Player").transform.position = new Vector3(GameObject.Find("Player").transform.position.x, GameObject.Find("Player").transform.position.y, -9.0f);
+			}
+			else
+				movement = new Vector3(moveHorizontal, moveVertical, 0.03f);
+
+			int life = (int)(((-12.6701 - GameObject.Find("Player").transform.position.z) / (-3.6701)) * 100) + 1;
+
+			health.text = "Integrity: " + life + "%";
+
+			rigid.AddForce(movement * speed);
 		}
 		else
-			movement = new Vector3(moveHorizontal, moveVertical, 0.03f);
+		{
+			restartTimer += Time.deltaTime;
 
-		int life = (int)(((-12.6701 - GameObject.Find("Player").transform.position.z) / (-3.6701)) * 100) + 1;
-
-		health.text = "Integrity: " + life + "%";
-
-		rigid.AddForce(movement * speed);
+			if (restartTimer >= restartDelay)
+				SceneManager.LoadScene("mainMenu");
+		}
 	}
 
 	void OnCollisionEnter(Collision col)
@@ -62,13 +75,41 @@ public class Player : MonoBehaviour {
 		{
 			Destroy(col.gameObject);
 			rigid.AddForce(new Vector3(0, 0, -20f));
+			PlayCrashSound();
 		}
 		if(col.gameObject.name == "Despawner")
 		{
-			Destroy(this.gameObject);
+			GameOver();
+			GameObject.Find("Player").transform.position = new Vector3(-100f, -100f, -100f);
+			CancelInvoke();
 			health.text = "GAME OVER";
-			SceneManager.LoadScene("mainMenu");
 		}
+	}
+
+	void PlayCrashSound()
+	{
+		switch (UnityEngine.Random.Range(0, 4))
+		{
+			case 0:
+				playerAudio.PlayOneShot(crash1);
+				break;
+			case 1:
+				playerAudio.PlayOneShot(crash2);
+				break;
+			case 2:
+				playerAudio.PlayOneShot(crash3);
+				break;
+			default:
+				playerAudio.PlayOneShot(crash4);
+				break;
+		}
+	}
+
+	void GameOver()
+	{
+		background.clip = blackHole;
+		background.Play();
+		destroyed = true;
 	}
 
 	public void AddToScore(bool hit)
